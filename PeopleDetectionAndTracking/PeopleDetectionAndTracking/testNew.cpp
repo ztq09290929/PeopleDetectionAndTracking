@@ -4,12 +4,14 @@
 int main()
 {
 	//GetInfoCallBackFun clsGetInfoCallBackFun;
-	char * path = " ";
+	char * path = "../output";
 	bool bDistin;
 	int objClass;
 	string objInfo;
-	VideoProcessor videoProcessor;
+	unsigned int frame_count = 0;
+	int frame_drump = 5;
 
+	VideoProcessor videoProcessor;
 	cv::VideoCapture VCcapture;
 
 	//VCcapture.open("../VideoProcessor/images/สำฦต2.mp4");
@@ -31,7 +33,11 @@ int main()
 
 	while (VCcapture.read(temp_frame))
 	{
-		videoProcessor.Run(temp_frame.data, temp_frame.rows * temp_frame.cols * 3, objInfo,objClass);
+		++frame_count;
+		if (frame_count % frame_drump == 0)
+		{
+			videoProcessor.Run(temp_frame.data, temp_frame.rows * temp_frame.cols * 3, objInfo, objClass);
+		}
 	}
 
 	return 0;

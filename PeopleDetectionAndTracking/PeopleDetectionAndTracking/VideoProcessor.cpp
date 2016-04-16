@@ -81,6 +81,9 @@ void VideoProcessor::Run(unsigned char* pBGR24, int _size, string& _strObjectInf
 	cv::morphologyEx(m_foreImage, m_foreImage, cv::MORPH_CLOSE, m_element);
 	m_CImgproc.FillHole(m_foreImage, m_foreImage);
 
+	std::vector<cv::Rect> temp_people_rects;
+
+
 	m_CBlob.BlobDetecter(m_foreImage, m_frame);
 	//m_CBlob.ClassifyCenters(m_foreImage, m_frame, m_ori_image, _bObjectDistinguish, _strObjectInfo, _nObjectClass);
 	m_CBlob.ClassifyCenters(m_foreImage, m_frame, m_ori_image, _strObjectInfo, _nObjectClass);

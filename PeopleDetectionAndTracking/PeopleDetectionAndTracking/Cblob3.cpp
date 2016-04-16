@@ -35,6 +35,27 @@ int CBlob::GetObjNum()
 	return count;
 }
 
+void CBlob::BlobDetecterUseRect(const cv::Mat& _binImg, cv::Mat& _colorImg,std::vector<cv::Rect>& _input_rects)
+{
+	m_centers.clear();
+	m_rects.clear();
+	m_colorsRGB.clear();
+
+	for (auto it = _input_rects.begin(); it != _input_rects.end(); ++it)
+	{
+		m_rects.push_back(*it);
+
+		cv::Point center;		
+		center.x = it->x + it->width / 2;//矩形的中心点
+		center.y = it->y + it->height / 2;
+		m_centers.push_back(center);//存入外接矩形的中心点
+
+		vector<Vec3d> colorRGB;
+		m_CColorAly.GetAverageHSV3(_colorImg(*it), _binImg(*it), colorRGB, -1);
+		m_colorsRGB.push_back(colorRGB);
+	}
+}
+
 void CBlob::BlobDetecter(const cv::Mat& _binImg, cv::Mat& _colorImg)
 {
 	cv::Mat src = _binImg.clone();
@@ -44,7 +65,7 @@ void CBlob::BlobDetecter(const cv::Mat& _binImg, cv::Mat& _colorImg)
 	std::vector<std::vector<cv::Point>> contours;
 	cv::findContours(src, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_NONE);
 
-	m_goodContours.clear();//处理每一帧图像，都要清空之前的点
+	//m_goodContours.clear();//处理每一帧图像，都要清空之前的点
 	m_centers.clear();
 	m_rects.clear();
 	//m_PorV.clear();
@@ -57,7 +78,7 @@ void CBlob::BlobDetecter(const cv::Mat& _binImg, cv::Mat& _colorImg)
 		if (temRect.width > m_para.CBlob_ContoursRectNumThresh && temRect.height > m_para.CBlob_ContoursRectNumThresh && temRect.y > _binImg.rows * 3 / 10)
 		//if (temRect.width > m_para.CBlob_ContoursRectNumThresh && temRect.height > m_para.CBlob_ContoursRectNumThresh )
 		{
-			m_goodContours.push_back(*i);
+			//m_goodContours.push_back(*i);
 			m_rects.push_back(temRect);
 			cv::Point center;
 			int xSum(0), ySum(0);
@@ -150,7 +171,7 @@ void CBlob::ClassifyCenters(const cv::Mat& _binImg, cv::Mat& _colorImg, cv::Mat&
 			ObjectAndKF obj1;
 			obj1.m_vecCenters.push_back(cv::Point(m_centers.at(i).x, m_centers.at(i).y));
 			obj1.m_rect = m_rects.at(i);
-			obj1.m_Contours = m_goodContours.at(i);
+			//obj1.m_Contours = m_goodContours.at(i);
 			//obj1.m_class = m_PorV.at(i);
 			obj1.m_colorH = m_colorsRGB.at(i);
 			//obj1.m_allClassifyResults += obj1.m_class; //累计类别
@@ -189,7 +210,7 @@ void CBlob::ClassifyCenters(const cv::Mat& _binImg, cv::Mat& _colorImg, cv::Mat&
 				{
 					it->m_vecCenters.push_back(m_centers.at(id));
 					it->m_rect = m_rects.at(id);
-					it->m_Contours = m_goodContours.at(id);
+					//it->m_Contours = m_goodContours.at(id);
 					//it->m_class = m_PorV.at(id);
 					//it->m_colorH = m_colorsRGB.at(id);
 					//it->m_allClassifyResults += it->m_class; //累计类别
@@ -197,7 +218,7 @@ void CBlob::ClassifyCenters(const cv::Mat& _binImg, cv::Mat& _colorImg, cv::Mat&
 
 					m_centers.erase(m_centers.begin() + id);//在当前帧的中心点集和外接矩形集删除已经使用过的点和矩形
 					m_rects.erase(m_rects.begin() + id);
-					m_goodContours.erase(m_goodContours.begin() + id);
+					//m_goodContours.erase(m_goodContours.begin() + id);
 					//m_PorV.erase(m_PorV.begin() + id);
 					m_colorsRGB.erase(m_colorsRGB.begin() + id);
 
@@ -237,7 +258,7 @@ void CBlob::ClassifyCenters(const cv::Mat& _binImg, cv::Mat& _colorImg, cv::Mat&
 				{
 					it->m_vecCenters.push_back(m_centers.at(id));
 					it->m_rect = m_rects.at(id);
-					it->m_Contours = m_goodContours.at(id);
+					//it->m_Contours = m_goodContours.at(id);
 					//it->m_class = m_PorV.at(id);
 					//it->m_colorH = m_colorsRGB.at(id);
 					//it->m_allClassifyResults += it->m_class; //累计类别
@@ -245,7 +266,7 @@ void CBlob::ClassifyCenters(const cv::Mat& _binImg, cv::Mat& _colorImg, cv::Mat&
 
 					m_centers.erase(m_centers.begin() + id);//在当前帧的中心点集和外接矩形集删除已经使用过的点和矩形
 					m_rects.erase(m_rects.begin() + id);
-					m_goodContours.erase(m_goodContours.begin() + id);
+					//m_goodContours.erase(m_goodContours.begin() + id);
 					//m_PorV.erase(m_PorV.begin() + id);
 					m_colorsRGB.erase(m_colorsRGB.begin() + id);
 
@@ -273,7 +294,7 @@ void CBlob::ClassifyCenters(const cv::Mat& _binImg, cv::Mat& _colorImg, cv::Mat&
 			ObjectAndKF obj2;//则创建新的物体对象
 			obj2.m_vecCenters.push_back(cv::Point(m_centers[i].x,m_centers[i].y));
 			obj2.m_rect = m_rects[i];
-			obj2.m_Contours = m_goodContours[i];
+			//obj2.m_Contours = m_goodContours[i];
 			//obj2.m_class = m_PorV[i];
 			obj2.m_colorH = m_colorsRGB[i];
 			//obj2.m_allClassifyResults += obj2.m_class; //累计类别

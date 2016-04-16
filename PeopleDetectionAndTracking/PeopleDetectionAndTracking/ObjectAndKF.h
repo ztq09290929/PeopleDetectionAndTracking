@@ -26,7 +26,7 @@ public:
 
 	vector<cv::Point> m_vecCenters;	//存储该物体的所有轨迹点
 	cv::Rect m_rect;				//存储最后一个轨迹点对应的最小外接矩形
-	vector<cv::Point> m_Contours;	//存储最后一个轨迹点对应的轮廓
+	//vector<cv::Point> m_Contours;	//存储最后一个轨迹点对应的轮廓
 	int m_objID;					//存储物体的id号
 	//int m_class;					//当前帧人车分类，-1表示非车，1表示车
 	vector<Vec3d> m_colorH;			//该物体的颜色，分为上半段和下半段，枚举变量

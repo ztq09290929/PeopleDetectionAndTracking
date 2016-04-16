@@ -26,6 +26,7 @@ public:
 	CPara m_para;//参数类
 	//PVClassify m_pvclassify;//人车分类器
 
+	void BlobDetecterUseRect(const cv::Mat& _binImg, cv::Mat& _colorImg,std::vector<cv::Rect> & _input_rects);
 	void BlobDetecter(const cv::Mat& _binImg, cv::Mat& _outputImg);	//寻找前景物体中的较大轮廓，求其外接矩形和中心点还有轮廓
 	//void ClassifyCenters(const cv::Mat& _binImg, cv::Mat& _colorImg, cv::Mat& _ori_image, bool& _bObjectDistinguish, string& _strObjectInfo, int& _nObjectClass);//当前帧的矩形中心归类到各个物体
 	void ClassifyCenters(const cv::Mat& _binImg, cv::Mat& _colorImg, cv::Mat& _ori_image, string& _strObjectInfo, int& _nObjectClass);//当前帧的矩形中心归类到各个物体
@@ -42,7 +43,7 @@ private:
 
 	vector<cv::Point> m_centers;			//每一帧找到的矩形中心点都存在这里
 	vector<cv::Rect> m_rects;				//每一帧找到的外接矩形存在这里
-	std::vector<std::vector<cv::Point>> m_goodContours;//每一帧筛选的轮廓存在这
+	//std::vector<std::vector<cv::Point>> m_goodContours;//每一帧筛选的轮廓存在这
 	//vector<int> m_PorV;						//每一个轮廓的分类结果，-1表示非机动车，1表示机动车
 	vector<vector<Vec3d>> m_colorsRGB;        //每一个轮廓的主要RBG值，每个轮廓有上半段和下半段两个颜色值
 
